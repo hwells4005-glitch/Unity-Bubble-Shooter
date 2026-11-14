@@ -1,39 +1,16 @@
-name: Build Android APK (Unity)
+name: Get Unity License
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  build-android:
-    name: Build Android APK
+  get-license:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Cache Unity Library
-        uses: actions/cache@v3
+      - name: Request Unity Activation File (.alf)
+        uses: game-ci/unity-request-activation-file@v2
         with:
-          path: Library
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-          restore-keys: |
-            Library-
-
-      - name: Build Android APK via GameCI
-        uses: game-ci/unity-builder@v4
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-        with:
-          targetPlatform: Android
           unityVersion: 2022.3.20f1
-          androidExportType: androidPackage
-          buildName: BubbleShooterAndroid
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: BubbleShooter-APK
-          path: build/Android/*.apk
+          username: ${{ secrets.UNITY_EMAIL }}
+          password: ${{ secrets.UNITY_PASSWORD }}
           
